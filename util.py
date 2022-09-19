@@ -74,3 +74,24 @@ def get_robot_world_file(basefilename):
             os.environ.get("ROBOT_WORLDS_DIR", "testworlds/"), basefilename  		  	   		  	  			  		 			 	 	 		 		 	 		 		 	 		  	 	 			  	 
         )  		  	   		  	  			  		 			 	 	 		 		 	 		 		 	 		  	 	 			  	 
     )  		  	   		  	  			  		 			 	 	 		 		 	 		 		 	 		  	 	 			  	 
+
+def return_triggers(input_df_1 = pd.DataFrame(), input_df_2 = pd.DataFrame()):
+    above_flag = False
+    below_flag = False
+    soln = pd.DataFrame(index = input_df_1.index, columns=['Trigger'])
+    for date in input_df_1.index:
+        if above_flag == False and input_df_1.loc[date,] > input_df_2.loc[date,]:
+            above_flag = True
+            soln.at[date,'Trigger'] = 0
+        elif above_flag == True and input_df_1.loc[date,] < input_df_2.loc[date,]:
+            soln.at[date,'Trigger'] = -1
+            above_flag = False
+        elif below_flag == False and input_df_1.loc[date,] < input_df_2.loc[date,]:
+            below_flag = True
+            soln.at[date,'Trigger'] = 0
+        elif below_flag == True and input_df_1.loc[date,] > input_df_2.loc[date,]:  
+            soln.at[date,'Trigger'] = 1
+            below_flag = False
+        else:
+            soln.at[date,'Trigger'] = 0
+    return soln
